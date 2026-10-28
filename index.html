@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Allowance for Mama &amp; Papa</title>
+<meta name="theme-color" content="#2F5D50">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Allowance">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1EC; --surface:#FFFFFF; --ink:#17231F; --muted:#56665F; --line:#D3DCD5;
+  --pandan:#2F5D50; --mango:#E9A92B; --plum:#7E4A73; --env:#2F5D50; --env-flap:#3A6E5F; --on-env:#F4F7F2;
+  --ok-bg:#DCEBE3; --wait-bg:#F1E3EE; --skip-bg:#E8EBE9;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1613; --surface:#18221E; --ink:#E6EEE9; --muted:#9AABA4; --line:#2A3833;
+    --pandan:#6CB39B; --mango:#F0B94A; --plum:#CE96C1; --env:#1E3D33; --env-flap:#24493D; --on-env:#EAF2EE;
+    --ok-bg:#1F3A30; --wait-bg:#3A2536; --skip-bg:#243029;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1613; --surface:#18221E; --ink:#E6EEE9; --muted:#9AABA4; --line:#2A3833;
+  --pandan:#6CB39B; --mango:#F0B94A; --plum:#CE96C1; --env:#1E3D33; --env-flap:#24493D; --on-env:#EAF2EE;
+  --ok-bg:#1F3A30; --wait-bg:#3A2536; --skip-bg:#243029;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 120px}
+h1,h2,.display{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 2px 16px}
+header.top h1{font-size:1.25rem;margin:0;font-weight:700;letter-spacing:-.01em}
+header.top p{margin:0;color:var(--muted);font-size:.9rem}
+.head-btns{display:flex;gap:8px}
+.icon-btn.spin svg{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.err{color:#B23A3A;font-size:.9rem;margin:-6px 0 12px}
+.icon-btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:none}
+.icon-btn svg{width:22px;height:22px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,label.seg:focus-within{outline:3px solid var(--mango);outline-offset:2px}
+
+/* Envelope hero */
+.envelope{position:relative;background:var(--env);color:var(--on-env);border-radius:20px;padding:88px 20px 20px;overflow:hidden}
+.envelope::before{content:"";position:absolute;inset:0 0 auto 0;height:120px;background:var(--env-flap);clip-path:polygon(0 0,100% 0,50% 62%)}
+.envelope::after{content:"";position:absolute;left:50%;top:62px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:var(--mango);box-shadow:0 0 0 4px var(--env-flap)}
+.stamp{position:absolute;top:14px;right:14px;z-index:1;border:2px dashed var(--mango);border-radius:6px;padding:6px 10px;text-align:center;font-size:.78rem;line-height:1.2;color:var(--on-env)}
+.stamp b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:1.05rem}
+.env-label{position:relative;font-size:.95rem;opacity:.85;margin:0}
+.env-date{position:relative;font-size:clamp(2rem,9vw,2.75rem);line-height:1.05;font-weight:800;letter-spacing:-.02em;margin:2px 0 4px}
+.env-turn{position:relative;display:flex;align-items:center;gap:8px;margin:-6px 0 16px;font-size:1.1rem}
+.env-turn b{font-family:"Bricolage Grotesque",sans-serif}
+.env-turn .dot{box-shadow:0 0 0 2px var(--on-env)}
+.env-turn button{appearance:none;border:0;background:none;color:var(--mango);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+.turn-now{display:flex;align-items:center;gap:12px;padding:4px 0 12px}
+.turn-now .who b{font-size:1.15rem}
+.turn-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.turn-actions .btn{min-height:46px;font-size:.95rem}
+.owe{font-size:.88rem;color:var(--plum);margin:8px 0 0}
+h3.mini-h{font-size:.95rem;color:var(--muted);margin:18px 0 2px}
+.sheet .sub{color:var(--muted);margin:-6px 0 14px}
+.env-when{position:relative;margin:0 0 18px;font-size:1rem}
+.env-when span{background:var(--mango);color:#1E1A0E;border-radius:999px;padding:2px 10px;font-weight:700}
+.meter{position:relative;height:12px;border-radius:999px;background:rgba(255,255,255,.16);overflow:hidden}
+.meter i{position:absolute;inset:0 auto 0 0;background:var(--mango);border-radius:999px;transition:width .5s ease}
+.env-sum{position:relative;display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:.95rem}
+.env-sum strong{font-family:"Bricolage Grotesque",sans-serif;font-size:1.1rem}
+@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:16px}
+section.card h2{font-size:1.1rem;margin:0 0 4px;font-weight:700}
+section.card .sub{color:var(--muted);font-size:.9rem;margin:0 0 12px}
+
+.people{list-style:none;margin:0;padding:0}
+.people li{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.people li:first-child{border-top:0}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.who{flex:1;min-width:0}
+.who b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who small{color:var(--muted)}
+.chip{font-size:.8rem;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.chip.paid{background:var(--ok-bg);color:var(--pandan)}
+.chip.pending{background:var(--wait-bg);color:var(--plum)}
+.chip.skipped{background:var(--skip-bg);color:var(--muted)}
+.chip.none{background:transparent;color:var(--muted);border:1px dashed var(--line)}
+.mini{appearance:none;border:1px solid var(--pandan);background:transparent;color:var(--pandan);font:inherit;font-size:.85rem;font-weight:700;border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
+.mini.solid{background:var(--pandan);color:var(--surface)}
+
+.chart-box{overflow-x:auto}
+.chart-box svg{display:block;width:100%;height:auto;min-width:300px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:.85rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.totals{margin-top:16px;display:grid;gap:10px}
+.trow{display:grid;grid-template-columns:minmax(70px,auto) 1fr auto;align-items:center;gap:10px;font-size:.92rem}
+.tbar{height:10px;border-radius:999px;background:var(--bg);overflow:hidden}
+.tbar i{display:block;height:100%;border-radius:999px}
+
+.week{margin-top:14px}
+.week:first-of-type{margin-top:0}
+.week h3{font-size:.95rem;margin:0 0 4px;color:var(--muted);font-weight:700;display:flex;justify-content:space-between}
+.entry{display:flex;align-items:center;gap:12px;width:100%;appearance:none;border:0;border-top:1px solid var(--line);background:transparent;color:inherit;font:inherit;text-align:left;padding:12px 0;cursor:pointer}
+.entry .amt{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;white-space:nowrap}
+.empty{color:var(--muted);margin:4px 0 0}
+.empty button{margin-top:10px}
+
+.fab{white-space:nowrap;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:5;appearance:none;border:0;background:var(--mango);color:#1E1A0E;font:inherit;font-weight:700;font-size:1.05rem;border-radius:999px;padding:14px 26px;min-height:52px;box-shadow:0 6px 18px rgba(20,40,30,.25);cursor:pointer;display:flex;align-items:center;gap:8px}
+.fab svg{width:20px;height:20px}
+.notice{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--mango);border-radius:10px;padding:10px 12px;font-size:.9rem;margin-bottom:14px}
+[hidden]{display:none!important}
+
+/* Sheets */
+dialog{border:0;padding:0;margin:auto auto 0;width:100%;max-width:560px;max-height:92vh;border-radius:20px 20px 0 0;background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(10,20,16,.5)}
+@media (min-width:700px){dialog{margin:auto;border-radius:20px}}
+.sheet{padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px))}
+.sheet h2{margin:0 0 14px;font-size:1.3rem}
+.field{display:block;margin-bottom:14px}
+.field > span{display:block;font-weight:700;font-size:.92rem;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:48px}
+.field small{color:var(--muted);display:block;margin-top:4px}
+.segs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+label.seg{position:relative;display:block;text-align:center;border:1px solid var(--line);border-radius:12px;padding:12px 4px;font-weight:700;cursor:pointer;background:var(--bg)}
+label.seg input{position:absolute;opacity:0;pointer-events:none}
+label.seg:has(input:checked){border-color:var(--pandan);background:var(--ok-bg);color:var(--pandan)}
+label.seg.p:has(input:checked){border-color:var(--plum);background:var(--wait-bg);color:var(--plum)}
+label.seg.s:has(input:checked){border-color:var(--muted);background:var(--skip-bg);color:var(--ink)}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.field input[type="date"]{min-width:0;-webkit-appearance:none;appearance:none}
+.actions{display:flex;gap:10px;margin-top:6px}
+.btn{appearance:none;flex:1;font:inherit;font-weight:700;border-radius:12px;min-height:50px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.primary{background:var(--pandan);border-color:var(--pandan);color:var(--surface)}
+.btn.danger{color:#B23A3A;border-color:currentColor;flex:0 0 auto;padding:0 16px}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.92rem;z-index:20;max-width:90vw;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1 id="title">Allowance for Mama &amp; Papa</h1>
+      <p id="syncState">Loading…</p>
+    </div>
+    <div class="head-btns">
+    <button class="icon-btn" id="openSettings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+    </div>
+  </header>
+
+  <div class="notice" id="localNotice" hidden>Not connected to Firebase yet, so changes are saved on this device only. Paste your Firebase settings into <code>FIREBASE_CONFIG</code> in index.html to share with the family.</div>
+  <div class="notice" id="offlineNotice" hidden>You’re offline. Changes are saved on this phone and will sync when you’re back online.</div>
+
+  <div class="envelope" aria-live="polite">
+    <div class="stamp"><b id="stampAmt">₱0</b>per week</div>
+    <p class="env-label">Next collection</p>
+    <p class="env-date display" id="nextDate">—</p>
+    <p class="env-when"><span id="nextWhen">—</span></p>
+    <p class="env-turn" id="nextTurn"></p>
+    <div class="meter" role="progressbar" aria-label="Collected this week" id="meter" aria-valuemin="0" aria-valuemax="100"><i id="meterFill" style="width:0%"></i></div>
+    <div class="env-sum"><span><strong id="collected">₱0</strong> collected</span><span id="toGo">—</span></div>
+  </div>
+
+  <section class="card">
+    <h2>Whose turn</h2>
+    <p class="sub" id="turnSub">For the next collection.</p>
+    <div id="turnNow"></div>
+    <h3 class="mini-h" id="upHead">Coming up</h3>
+    <div id="upcoming"></div>
+  </section>
+
+  <section class="card" id="balCard" hidden>
+    <h2>Owed back</h2>
+    <p class="sub">From weeks when someone covered another person’s turn.</p>
+    <ul class="people" id="balances"></ul>
+    <div id="paybacks"></div>
+  </section>
+
+  <section class="card">
+    <h2>Last 8 weeks</h2>
+    <p class="sub">Paid amounts per week. The dashed line is the weekly target.</p>
+    <div class="chart-box" id="chart"></div>
+    <div class="legend" id="legend"></div>
+    <div class="totals" id="totals"></div>
+  </section>
+
+  <section class="card">
+    <h2>History</h2>
+    <p class="sub">Tap an entry to edit it.</p>
+    <div id="history"></div>
+  </section>
+</div>
+
+<button class="fab" id="fab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  Log payment
+</button>
+
+<dialog id="entrySheet" aria-labelledby="entryTitle">
+  <form class="sheet" id="entryForm" method="dialog">
+    <h2 id="entryTitle">Log payment</h2>
+    <label class="field"><span>Collection week</span><select id="fWeek"></select></label>
+    <div class="field" id="fOtherWrap" hidden>
+      <div class="row2">
+        <label class="field" style="margin:0"><span id="fFromLbl">From</span><input id="fOther" type="date"></label>
+        <label class="field" style="margin:0" id="fToWrap"><span>To</span><input id="fTo" type="date"></label>
+      </div>
+      <small id="fOtherHint" style="color:var(--muted);display:block;margin-top:6px"></small>
+    </div>
+    <label class="field"><span>Paid by</span>
+      <input id="fWho" list="peopleOptions" autocomplete="off" placeholder="Name" required>
+      <datalist id="peopleOptions"></datalist>
+    </label>
+    <label class="field" id="fCoverWrap" hidden><span>Covering for</span>
+      <select id="fCover"></select>
+      <small>This amount is recorded as owed back by them.</small>
+    </label>
+    <div class="row2">
+      <label class="field"><span id="fAmtLbl">Amount</span><input id="fAmt" type="number" inputmode="decimal" min="0" step="any" required></label>
+      <label class="field"><span>Paid on</span><input id="fPaidOn" type="date"></label>
+    </div>
+    <div class="field"><span>Status</span>
+      <div class="segs" role="radiogroup" aria-label="Status">
+        <label class="seg"><input type="radio" name="status" value="paid" checked>Paid</label>
+        <label class="seg p"><input type="radio" name="status" value="pending">Pending</label>
+        <label class="seg s"><input type="radio" name="status" value="skipped">Skipped</label>
+      </div>
+    </div>
+    <label class="field"><span>Note</span><input id="fNote" placeholder="Optional, e.g. sent via GCash"></label>
+    <div class="actions">
+      <button type="button" class="btn danger" id="delBtn" hidden>Delete</button>
+      <button type="button" class="btn" id="cancelEntry">Cancel</button>
+      <button type="submit" class="btn primary" id="saveEntry">Save payment</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="settingsSheet" aria-labelledby="setTitle">
+  <form class="sheet" id="settingsForm" method="dialog">
+    <h2 id="setTitle">Settings</h2>
+    <label class="field"><span>Allowance is for</span><input id="sFor" placeholder="Mama &amp; Papa"></label>
+    <div class="row2">
+      <label class="field"><span>Weekly target</span><input id="sTarget" type="number" inputmode="decimal" min="0" step="any"></label>
+      <label class="field"><span>Currency symbol</span><input id="sCur" maxlength="4"></label>
+    </div>
+    <label class="field"><span>Collection day</span>
+      <select id="sDay">
+        <option value="0">Sunday</option><option value="1">Monday</option><option value="2">Tuesday</option>
+        <option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option>
+      </select>
+    </label>
+    <label class="field"><span>Rotation order</span>
+      <textarea id="sPeople" rows="2" placeholder="Ana, Ben, Carlo"></textarea>
+      <small>Names in the order they take turns, separated by commas.</small>
+    </label>
+    <label class="field"><span>First person’s turn is on</span>
+      <input id="sStart" type="date">
+      <small>The first name in the rotation pays on this collection. Everyone else follows in order.</small>
+    </label>
+    <div class="actions">
+      <button type="button" class="btn" id="cancelSettings">Cancel</button>
+      <button type="submit" class="btn primary">Save settings</button>
+    </div>
+    <div class="actions" style="margin-top:12px"><button type="button" class="btn" id="forgetBtn" style="font-weight:400;color:var(--muted)">Forget passcode on this phone</button></div>
+  </form>
+</dialog>
+
+<dialog id="turnSheet" aria-labelledby="turnTitle">
+  <div class="sheet">
+    <h2 id="turnTitle"></h2>
+    <p class="sub" id="turnInfo"></p>
+    <div style="display:grid;gap:10px">
+      <button type="button" class="btn primary" id="tsLog"></button>
+      <button type="button" class="btn" id="tsCover"></button>
+      <button type="button" class="btn" id="tsClose">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="settleSheet" aria-labelledby="settleTitle">
+  <form class="sheet" id="settleForm" method="dialog">
+    <h2 id="settleTitle">Record payback</h2>
+    <p class="sub" id="settleSub"></p>
+    <div class="row2">
+      <label class="field"><span>Amount</span><input id="stAmt" type="number" inputmode="decimal" min="0" step="any" required></label>
+      <label class="field"><span>Date</span><input id="stDate" type="date"></label>
+    </div>
+    <label class="field"><span>Note</span><input id="stNote" placeholder="Optional, e.g. paid in cash"></label>
+    <div class="actions">
+      <button type="button" class="btn" id="cancelSettle">Cancel</button>
+      <button type="submit" class="btn primary">Save payback</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="passSheet" aria-labelledby="passTitle">
+  <form class="sheet" id="passForm" method="dialog">
+    <h2 id="passTitle">Enter family passcode</h2>
+    <p class="sub" style="margin:-6px 0 14px;color:var(--muted)">Ask whoever set up the tracker for the passcode. You only need to enter it once on this phone. Setting it up for the first time? Choose a passcode with at least 6 characters.</p>
+    <label class="field"><span>Passcode</span><input id="passInput" type="password" autocomplete="current-password" required></label>
+    <p class="err" id="passErr" hidden></p>
+    <div class="actions"><button type="submit" class="btn primary" id="passBtn">Unlock</button></div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+  // ======== PASTE YOUR FIREBASE SETTINGS HERE (from Project settings > Your apps) ========
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCtbVqGVRdzjRR0UmlN9gfucA5k209bY4w",
+    authDomain: "allowance-tracker-7d7b2.firebaseapp.com",
+    projectId: "allowance-tracker-7d7b2",
+    storageBucket: "allowance-tracker-7d7b2.firebasestorage.app",
+    messagingSenderId: "816674423718",
+    appId: "1:816674423718:web:7fc9da127264c65e534567"
+  };
+  // ======================================================================================
+  const $ = s => document.querySelector(s);
+  const COLORS = ['#2F8F73','#E9A92B','#9A5A8D','#3B7EA1','#C46A3A','#7A8F2E','#5A6AB8','#B0475E'];
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const DEFAULTS = {recipient:'Mama & Papa', target:2000, day:0, currency:'₱', people:[]};
+  const LS_KEY = 'allowance-tracker-v1';
+  const KEY_KEY = 'allowance-tracker-passcode';
+
+  let settings = {...DEFAULTS};
+  let payments = [];
+    let mode = 'pending';   // 'firebase' | 'local'
+  const readOnly = false;
+  let editingId = null;
+
+  // ---------- dates ----------
+  const pad = n => String(n).padStart(2,'0');
+  const ymd = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); };
+  const today = () => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
+  function nextCollection(){
+    const d = today();
+    d.setDate(d.getDate() + ((Number(settings.day) - d.getDay() + 7) % 7));
+    return d;
+  }
+  const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+  const shortDate = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const longDate = d => d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+  function whenText(d){
+    const diff = Math.round((d - today())/86400000);
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Tomorrow';
+    return 'In ' + diff + ' days';
+  }
+  const money = n => settings.currency + Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
+
+  // ---------- helpers ----------
+  function colorFor(name){
+    const i = settings.people.findIndex(p => p.toLowerCase() === String(name).toLowerCase());
+    if (i >= 0) return COLORS[i % COLORS.length];
+    let h = 0; for (const c of String(name)) h = (h*31 + c.charCodeAt(0)) >>> 0;
+    return COLORS[h % COLORS.length];
+  }
+  function allNames(){
+    const set = new Map();
+    settings.people.forEach(p => set.set(p.toLowerCase(), p));
+    payments.forEach(p => { if (p.who && !set.has(p.who.toLowerCase())) set.set(p.who.toLowerCase(), p.who); });
+    return [...set.values()];
+  }
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let toastTimer;
+  function toast(msg){
+    const t = $('#toast'); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 3200);
+  }
+  const statusLabel = s => ({paid:'Paid', pending:'Pending', skipped:'Skipped'}[s] || s);
+
+  // ---------- render ----------
+  function render(){
+    const next = nextCollection();
+    const key = ymd(next);
+    const target = Number(settings.target) || 0;
+    $('#title').textContent = 'Allowance for ' + (settings.recipient || 'Mama & Papa');
+    document.title = $('#title').textContent;
+    $('#stampAmt').textContent = money(target);
+    $('#nextDate').textContent = longDate(next);
+    $('#nextWhen').textContent = whenText(next);
+
+    const week = payments.filter(p => p.week === key);
+    const paid = week.filter(p => p.status === 'paid').reduce((a,p) => a + Number(p.amount||0), 0);
+    const pct = target ? Math.min(100, Math.round(paid/target*100)) : 0;
+    $('#meterFill').style.width = pct + '%';
+    $('#meter').setAttribute('aria-valuenow', pct);
+    $('#collected').textContent = money(paid);
+    $('#toGo').textContent = target ? (paid >= target ? 'Target reached' : money(target - paid) + ' to go') : 'No target set';
+
+    // Whose turn
+    const st = weekState(key);
+    if (!st.turn){
+      $('#nextTurn').innerHTML = readOnly ? '' : '<button data-act="settings">Set up the rotation</button>';
+    } else {
+      $('#nextTurn').innerHTML = '<span class="dot" style="background:'+colorFor(st.payer)+'"></span><span>' + turnHtml(st) + '</span>';
+    }
+    renderTurns(next, st);
+    renderBalances();
+
+    renderChart(next, target);
+    renderHistory();
+    $('#fab').hidden = readOnly;
+    $('#openSettings').hidden = readOnly;
+    $('#localNotice').hidden = mode !== 'local';
+    $('#offlineNotice').hidden = !(mode === 'firebase' && offline && hasKey());
+    $('#syncState').textContent = mode === 'local' ? 'Saved on this device' : !hasKey() ? 'Locked' : offline ? 'Offline, will sync later' : lastSync ? 'Live, synced with Firebase' : 'Connecting…';
+  }
+
+  // ----- rotation -----
+  function canon(name){
+    const n = String(name||'').toLowerCase();
+    return allNames().find(x => x.toLowerCase() === n) || name;
+  }
+  const same = (a,b) => String(a||'').toLowerCase() === String(b||'').toLowerCase();
+  function rotationStartKey(){
+    const d = settings.rotationStart ? parse(settings.rotationStart) : nextCollection();
+    d.setDate(d.getDate() + ((Number(settings.day) - d.getDay() + 7) % 7));
+    return ymd(d);
+  }
+  function turnFor(weekKey){
+    const ppl = settings.people || [];
+    if (!ppl.length) return null;
+    const diff = Math.round((parse(weekKey) - parse(rotationStartKey())) / 604800000);
+    return ppl[((diff % ppl.length) + ppl.length) % ppl.length];
+  }
+  function weekState(weekKey){
+    const turn = turnFor(weekKey);
+    const entries = payments.filter(p => p.week === weekKey);
+    const own = turn ? entries.find(p => same(p.who, turn) && !p.coverFor) : null;
+    const cover = turn ? entries.find(p => same(p.coverFor, turn)) : null;
+    const entry = own || cover || null;
+    return {week: weekKey, turn, entries, own, cover, entry, payer: cover ? cover.who : turn};
+  }
+  function turnHtml(st){
+    return st.cover
+      ? '<b>' + esc(st.cover.who) + '</b> covering for ' + esc(st.turn)
+      : '<b>' + esc(st.turn) + '’s</b> turn';
+  }
+  function chipFor(entry){
+    if (!entry) return '<span class="chip none">Not logged</span>';
+    return '<span class="chip ' + esc(entry.status) + '">' + statusLabel(entry.status) + (entry.status === 'skipped' ? '' : ' ' + esc(money(entry.amount))) + '</span>';
+  }
+  function renderTurns(next, st){
+    const box = $('#turnNow'), up = $('#upcoming');
+    $('#turnSub').textContent = 'For ' + longDate(next) + '.';
+    if (!st.turn){
+      box.innerHTML = '<p class="empty">Add the names in turn order to see whose turn it is.</p>' + (readOnly ? '' : '<div class="empty"><button class="mini solid" data-act="settings">Set up the rotation</button></div>');
+      up.innerHTML = ''; $('#upHead').hidden = true; return;
+    }
+    $('#upHead').hidden = false;
+    let html = '<div class="turn-now"><span class="dot" style="background:'+colorFor(st.payer)+'"></span><div class="who"><b>' +
+      (st.cover ? esc(st.cover.who) + ' is covering' : esc(st.turn) + '’s turn') + '</b>' + chipFor(st.entry) + '</div></div>';
+    if (st.cover && st.cover.status === 'paid'){
+      const debt = computeBalances().find(x => same(x.debtor, st.turn) && same(x.creditor, st.cover.who));
+      html += '<p class="owe" style="margin:0 0 12px">' + (debt ? esc(st.turn) + ' owes ' + esc(st.cover.who) + ' ' + esc(money(debt.amount)) + ' in total.' : esc(st.turn) + ' has paid ' + esc(st.cover.who) + ' back.') + '</p>';
+    }
+    if (!readOnly){
+      if (!st.entry){
+        html += '<div class="turn-actions"><button class="btn primary" data-act="logturn" data-week="'+st.week+'">Log ' + esc(st.turn) + '’s payment</button>' +
+          '<button class="btn" data-act="cover" data-week="'+st.week+'">' + esc(st.turn) + ' can’t make it</button></div>';
+      } else if (st.entry.status === 'pending'){
+        html += '<div class="turn-actions"><button class="btn primary" data-act="markpaid" data-id="'+esc(st.entry.id)+'">Mark as paid</button>' +
+          (st.cover ? '<button class="btn" data-act="edit" data-id="'+esc(st.entry.id)+'">Edit</button>' : '<button class="btn" data-act="cover" data-week="'+st.week+'">' + esc(st.turn) + ' can’t make it</button>') + '</div>';
+      }
+    }
+    box.innerHTML = html;
+    const rows = [];
+    for (let i = 1; i <= 6; i++){
+      const s = weekState(ymd(addDays(next, 7*i)));
+      rows.push('<button class="entry" data-act="turn" data-week="'+s.week+'"'+(readOnly?' disabled':'')+'>' +
+        '<span class="dot" style="background:'+colorFor(s.payer)+'"></span>' +
+        '<span class="who"><b>' + esc(s.cover ? s.cover.who : s.turn) + '</b><small>' + esc(weekLabel(s.week)) + (s.cover ? ', covering for ' + esc(s.turn) : '') + '</small></span>' +
+        (s.entry ? chipFor(s.entry) : '') + '</button>');
+    }
+    up.innerHTML = rows.join('');
+  }
+  function computeBalances(){
+    const owe = {};   // "debtor|creditor" -> amount
+    const add = (d, c, amt) => { const k = canon(d) + '|' + canon(c); owe[k] = (owe[k]||0) + amt; };
+    payments.forEach(p => { if (p.coverFor && p.status === 'paid' && !same(p.coverFor, p.who)) add(p.coverFor, p.who, Number(p.amount)||0); });
+    (settings.settlements||[]).forEach(s => add(s.to, s.from, Number(s.amount)||0)); // payback reduces the debt
+    const out = [], seen = new Set();
+    Object.keys(owe).forEach(k => {
+      const [d, c] = k.split('|'); const pair = [d,c].sort().join('|');
+      if (seen.has(pair)) return; seen.add(pair);
+      const net = (owe[d+'|'+c]||0) - (owe[c+'|'+d]||0);
+      if (Math.abs(net) > 0.004) out.push(net > 0 ? {debtor:d, creditor:c, amount:net} : {debtor:c, creditor:d, amount:-net});
+    });
+    return out.sort((a,b) => b.amount - a.amount);
+  }
+  function renderBalances(){
+    const bal = computeBalances();
+    const backs = (settings.settlements||[]).slice().sort((a,b) => String(b.date).localeCompare(String(a.date))).slice(0,3);
+    $('#balCard').hidden = !bal.length && !backs.length;
+    $('#balances').innerHTML = bal.length ? bal.map(b =>
+      '<li><span class="dot" style="background:'+colorFor(b.debtor)+'"></span><div class="who"><b>' + esc(b.debtor) + ' owes ' + esc(b.creditor) + '</b><small>' + esc(money(b.amount)) + '</small></div>' +
+      (readOnly ? '' : '<button class="mini" data-act="settle" data-from="'+esc(b.debtor)+'" data-to="'+esc(b.creditor)+'" data-amt="'+b.amount+'">Paid back</button>') + '</li>').join('')
+      : '<li><div class="who"><b>All settled</b><small>Nobody owes anyone right now.</small></div></li>';
+    $('#paybacks').innerHTML = backs.length ? '<h3 class="mini-h">Recent paybacks</h3>' + backs.map(s =>
+      '<p class="empty" style="font-size:.9rem;margin:4px 0">' + esc(s.from) + ' paid ' + esc(s.to) + ' back ' + esc(money(s.amount)) + (s.date ? ', ' + esc(shortDate(parse(s.date))) : '') + (s.note ? ' (' + esc(s.note) + ')' : '') + '</p>').join('') : '';
+  }
+
+  function renderChart(next, target){
+    const weeks = []; for (let i = 7; i >= 0; i--) weeks.push(addDays(next, -7*i));
+    const names = allNames();
+    const data = weeks.map(w => {
+      const k = ymd(w);
+      const per = {};
+      payments.filter(p => p.week === k && p.status === 'paid').forEach(p => {
+        const n = names.find(x => x.toLowerCase() === p.who.toLowerCase()) || p.who;
+        per[n] = (per[n]||0) + Number(p.amount||0);
+      });
+      return {w, per, total:Object.values(per).reduce((a,b)=>a+b,0)};
+    });
+    const W = 340, H = 180, L = 8, R = 8, T = 18, B = 26;
+    const max = Math.max(target, ...data.map(d=>d.total), 1) * 1.12;
+    const bw = (W - L - R) / data.length;
+    const y = v => T + (H - T - B) * (1 - v/max);
+    let svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Weekly paid amounts for the last 8 weeks">';
+    svg += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(H-B)+'" y2="'+(H-B)+'" stroke="var(--line)"/>';
+    data.forEach((d,i) => {
+      const x = L + i*bw + bw*0.18, w = bw*0.64;
+      let acc = 0;
+      const parts = Object.entries(d.per);
+      parts.forEach(([n,v], j) => {
+        const y1 = y(acc + v), y0 = y(acc);
+        svg += '<rect x="'+x.toFixed(1)+'" y="'+y1.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+Math.max(0,(y0-y1)).toFixed(1)+'" fill="'+colorFor(n)+'"'+(j===parts.length-1?' rx="3"':'')+'><title>'+esc(n)+': '+esc(money(v))+'</title></rect>';
+        acc += v;
+      });
+      if (!parts.length) svg += '<rect x="'+x.toFixed(1)+'" y="'+(H-B-2)+'" width="'+w.toFixed(1)+'" height="2" fill="var(--line)"/>';
+      const isNext = i === data.length-1;
+      svg += '<text x="'+(x+w/2).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" font-size="10" fill="'+(isNext?'var(--ink)':'var(--muted)')+'" font-weight="'+(isNext?'700':'400')+'">'+esc(shortDate(d.w))+'</text>';
+    });
+    if (target){
+      const ty = y(target).toFixed(1);
+      svg += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+ty+'" y2="'+ty+'" stroke="var(--mango)" stroke-width="1.5" stroke-dasharray="5 4"/>';
+      svg += '<text x="'+(W-R)+'" y="'+(ty-5)+'" text-anchor="end" font-size="10" fill="var(--muted)">Target '+esc(money(target))+'</text>';
+    }
+    svg += '</svg>';
+    $('#chart').innerHTML = svg;
+    $('#legend').innerHTML = names.map(n => '<span><span class="dot" style="background:'+colorFor(n)+'"></span>'+esc(n)+'</span>').join('');
+
+    // totals over the 8 weeks
+    const keys = new Set(weeks.map(ymd));
+    const tot = {};
+    payments.filter(p => keys.has(p.week) && p.status==='paid').forEach(p => {
+      const n = names.find(x => x.toLowerCase() === p.who.toLowerCase()) || p.who;
+      tot[n] = (tot[n]||0) + Number(p.amount||0);
+    });
+    const rows = Object.entries(tot).sort((a,b)=>b[1]-a[1]);
+    const tmax = Math.max(...rows.map(r=>r[1]), 1);
+    $('#totals').innerHTML = rows.length
+      ? '<p class="sub" style="margin:0">Total contributed, last 8 weeks</p>' + rows.map(([n,v]) =>
+        '<div class="trow"><span>'+esc(n)+'</span><span class="tbar"><i style="width:'+(v/tmax*100).toFixed(1)+'%;background:'+colorFor(n)+'"></i></span><b>'+esc(money(v))+'</b></div>').join('')
+      : '';
+  }
+
+  function renderHistory(){
+    const box = $('#history');
+    if (!payments.length){
+      box.innerHTML = '<p class="empty">No payments logged yet.</p>' + (readOnly ? '' : '<div class="empty"><button class="mini solid" data-act="log">Log the first payment</button></div>');
+      return;
+    }
+    const byWeek = {};
+    payments.forEach(p => (byWeek[p.week] = byWeek[p.week] || []).push(p));
+    const weeks = Object.keys(byWeek).sort().reverse();
+    box.innerHTML = weeks.map(k => {
+      const list = byWeek[k].sort((a,b) => a.who.localeCompare(b.who));
+      const total = list.filter(p=>p.status==='paid').reduce((a,p)=>a+Number(p.amount||0),0);
+      return '<div class="week"><h3><span>'+esc(weekLabel(k))+'</span><span>'+esc(money(total))+'</span></h3>' +
+        list.map(p => '<button class="entry" data-act="edit" data-id="'+esc(p.id)+'"'+(readOnly?' disabled':'')+'>' +
+          '<span class="dot" style="background:'+colorFor(p.who)+'"></span>' +
+          '<span class="who"><b>'+esc(p.who)+'</b><small>'+[p.coverFor ? 'Covered for '+esc(p.coverFor) : '', p.paidOn && p.status==='paid' ? 'Paid '+esc(shortDate(parse(p.paidOn))) : '', p.note ? esc(p.note) : ''].filter(Boolean).join(', ')+'</small></span>' +
+          '<span class="chip '+esc(p.status)+'">'+statusLabel(p.status)+'</span>' +
+          '<span class="amt">'+esc(money(p.amount))+'</span></button>').join('') + '</div>';
+    }).join('');
+  }
+
+  // ---------- storage (Firebase Firestore) ----------
+  const configured = !!(FIREBASE_CONFIG && FIREBASE_CONFIG.projectId && !/PASTE/.test(FIREBASE_CONFIG.projectId));
+  const SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
+  let key = '';
+  try { key = localStorage.getItem(KEY_KEY) || ''; } catch(e){}
+  let fs = null, fdb = null, unsubs = [], offline = false, lastSync = null;
+
+  function cache(){ try { localStorage.setItem(LS_KEY, JSON.stringify({settings, payments})); } catch(e){} }
+  function loadCache(){
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw){ const d = JSON.parse(raw); settings = {...DEFAULTS, ...(d.settings||{})}; payments = Array.isArray(d.payments) ? d.payments : []; }
+    } catch(e){}
+  }
+  const paymentsCol = () => fs.collection(fdb, 'families', key, 'payments');
+  const settingsDoc = () => fs.doc(fdb, 'families', key, 'config', 'settings');
+
+  async function connect(){
+    if (fdb) return;
+    const appMod = await import(SDK + 'firebase-app.js');
+    fs = await import(SDK + 'firebase-firestore.js');
+    const app = appMod.initializeApp(FIREBASE_CONFIG);
+    try { fdb = fs.initializeFirestore(app, {localCache: fs.persistentLocalCache()}); }
+    catch(e){ fdb = fs.getFirestore(app); }
+  }
+  function hasKey(){ return !!key; }
+  function validCode(c){ return c.length >= 6 && !c.includes('/'); }
+  function handleError(e){
+    console.error(e);
+    if (e && e.code === 'permission-denied') toast('Firebase refused the change. Check the database rules in the setup guide.');
+    else toast('Couldn’t save. It will retry when you’re back online.');
+  }
+  function subscribe(){
+    unsubs.forEach(u => u()); unsubs = [];
+    unsubs.push(fs.onSnapshot(paymentsCol(), {includeMetadataChanges:true}, snap => {
+      payments = snap.docs.map(d => d.data()).filter(p => p && p.id && p.week && p.who);
+      offline = snap.metadata.fromCache;
+      if (!offline) lastSync = new Date();
+      cache(); render();
+    }, err => { offline = true; render(); handleError(err); }));
+    unsubs.push(fs.onSnapshot(settingsDoc(), snap => {
+      const d = snap.exists() ? snap.data() : null;
+      settings = {...DEFAULTS, ...(d||{}), people: Array.isArray(d && d.people) ? d.people : []};
+      cache(); render();
+    }, () => {}));
+  }
+  function askPasscode(msg){
+    $('#passErr').textContent = msg || '';
+    $('#passErr').hidden = !msg;
+    $('#passInput').value = '';
+    if (!$('#passSheet').open) $('#passSheet').showModal();
+    setTimeout(() => $('#passInput').focus(), 50);
+  }
+  async function start(){
+    if (mode !== 'firebase') return;
+    if (!key){ askPasscode(''); return; }
+    try { await connect(); subscribe(); }
+    catch(e){ console.error(e); offline = true; render(); toast('Couldn’t load Firebase. Check your internet connection.'); }
+  }
+  // Writes return right away; Firestore shows the change instantly and syncs in the background.
+  function fire(promise){ promise.catch(handleError); return true; }
+  async function writePayment(p){
+    if (mode !== 'firebase'){ const i = payments.findIndex(x => x.id === p.id); if (i >= 0) payments[i] = p; else payments.push(p); cache(); render(); return true; }
+    return fire(fs.setDoc(fs.doc(paymentsCol(), p.id), p));
+  }
+  async function writePayments(list){
+    if (mode !== 'firebase'){ payments.push(...list); cache(); render(); return true; }
+    const b = fs.writeBatch(fdb);
+    list.forEach(p => b.set(fs.doc(paymentsCol(), p.id), p));
+    return fire(b.commit());
+  }
+  async function removePayment(id){
+    if (mode !== 'firebase'){ payments = payments.filter(x => x.id !== id); cache(); render(); return true; }
+    return fire(fs.deleteDoc(fs.doc(paymentsCol(), id)));
+  }
+  async function writeSettings(s){
+    if (mode !== 'firebase'){ settings = {...s}; cache(); render(); return true; }
+    return fire(fs.setDoc(settingsDoc(), s));
+  }
+
+  $('#passForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const v = $('#passInput').value.trim();
+    if (!validCode(v)){ $('#passErr').textContent = 'Use at least 6 characters, with no slashes.'; $('#passErr').hidden = false; return; }
+    $('#passBtn').disabled = true;
+    try {
+      await connect();
+      key = v;
+      let snap;
+      try { snap = await fs.getDocFromServer(settingsDoc()); }
+      catch(err){
+        if (err && err.code === 'permission-denied') throw err;
+        snap = await fs.getDoc(settingsDoc());
+      }
+      if (!snap.exists()){
+        if (!confirm('No tracker uses this passcode yet. Start a new tracker with it?\n\nIf your family already has one, tap Cancel and check the passcode.')){ key = ''; return; }
+        await fs.setDoc(settingsDoc(), {...DEFAULTS});
+      }
+      try { localStorage.setItem(KEY_KEY, key); } catch(_){}
+      payments = []; settings = {...DEFAULTS};
+      $('#passSheet').close();
+      subscribe(); toast('Unlocked');
+    } catch(err){
+      key = '';
+      console.error(err);
+      if (err && err.code === 'permission-denied'){ $('#passErr').textContent = 'Firebase blocked access. Check the database rules in the setup guide.'; $('#passErr').hidden = false; }
+      else toast('Couldn’t reach Firebase. Check your internet connection.');
+    } finally { $('#passBtn').disabled = false; }
+  });
+  $('#passSheet').addEventListener('cancel', e => e.preventDefault());
+  $('#forgetBtn').addEventListener('click', () => {
+    if (!confirm('Remove the passcode from this phone? You’ll need to enter it again to see the tracker.')) return;
+    try { localStorage.removeItem(KEY_KEY); localStorage.removeItem(LS_KEY); } catch(_){}
+    unsubs.forEach(u => u()); unsubs = []; key = '';
+    payments = []; settings = {...DEFAULTS};
+    $('#settingsSheet').close(); render(); askPasscode('');
+  });
+
+  // ---------- entry sheet ----------
+  // Collection day on or after a given date
+  function snapToCollection(d){ const x = new Date(d); x.setDate(x.getDate() + ((Number(settings.day) - x.getDay() + 7) % 7)); return x; }
+  function weekLabel(k){
+    const d = parse(k), now = today();
+    let lbl = longDate(d);
+    if (d.getFullYear() !== now.getFullYear()) lbl += ', ' + d.getFullYear();
+    return lbl;
+  }
+  function weekOptions(selected){
+    const next = nextCollection(), nextKey = ymd(next);
+    const upcoming = [], past = [];
+    for (let i = 0; i <= 12; i++) upcoming.push(ymd(addDays(next, 7*i)));
+    for (let i = 1; i <= 12; i++) past.push(ymd(addDays(next, -7*i)));
+    if (selected && !upcoming.includes(selected) && !past.includes(selected)) (selected > nextKey ? upcoming : past).push(selected);
+    upcoming.sort(); past.sort().reverse();
+    const opt = k => '<option value="'+k+'"'+(k===selected?' selected':'')+'>'+esc(weekLabel(k) + (k === nextKey ? ' (next)' : ''))+'</option>';
+    return '<optgroup label="Upcoming">' + upcoming.map(opt).join('') + '</optgroup>' +
+      '<optgroup label="Past">' + past.map(opt).join('') + '</optgroup>' +
+      '<option value="other">' + (editingId ? 'Pick another date…' : 'Pick a date range…') + '</option>';
+  }
+  const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,9);
+  // Collection days that fall between two dates (inclusive)
+  function rangeWeeks(fromStr, toStr){
+    if (!fromStr) return [];
+    let a = snapToCollection(parse(fromStr));
+    const end = parse(toStr || fromStr);
+    const out = [];
+    while (a <= end && out.length < 104){ out.push(ymd(a)); a = addDays(a, 7); }
+    return out;
+  }
+  function rangePlan(){
+    const weeks = rangeWeeks($('#fOther').value, editingId ? '' : $('#fTo').value);
+    const who = $('#fWho').value.trim().toLowerCase();
+    const taken = who ? weeks.filter(w => payments.some(p => p.week === w && p.who.toLowerCase() === who)) : [];
+    return {weeks, add: weeks.filter(w => !taken.includes(w)), taken};
+  }
+  function updateOtherHint(){
+    const hint = $('#fOtherHint');
+    const range = !editingId && $('#fWeek').value === 'other';
+    $('#fAmtLbl').textContent = range ? 'Amount per week' : 'Amount';
+    if ($('#fWeek').value !== 'other') return;
+    if (editingId){
+      const v = $('#fOther').value;
+      hint.textContent = v ? 'Saved under ' + weekLabel(ymd(snapToCollection(parse(v)))) + ', that week’s ' + DAYS[Number(settings.day)] + ' collection.' : 'Choose any date. It’s saved under that week’s collection day.';
+      return;
+    }
+    if (!$('#fOther').value){ hint.textContent = 'Choose a start and end date. One entry is added for each ' + DAYS[Number(settings.day)] + ' collection in between.'; return; }
+    if ($('#fTo').value && $('#fTo').value < $('#fOther').value){ hint.textContent = 'The end date is before the start date.'; return; }
+    const {weeks, add, taken} = rangePlan();
+    if (!weeks.length){ hint.textContent = 'No ' + DAYS[Number(settings.day)] + ' collections fall between these dates.'; return; }
+    const amt = Number($('#fAmt').value) || 0;
+    let t = add.length
+      ? 'Adds ' + add.length + ' weekly ' + (add.length === 1 ? 'entry' : 'entries') + ': ' + weekLabel(add[0]) + (add.length > 1 ? ' to ' + weekLabel(add[add.length-1]) : '') + (amt ? ', ' + money(amt*add.length) + ' in total.' : '.')
+      : 'Nothing to add.';
+    if (taken.length) t += ' Skips ' + taken.length + ' ' + (taken.length === 1 ? 'week' : 'weeks') + ' that ' + $('#fWho').value.trim() + ' already has.';
+    if (weeks.length >= 104) t += ' Limited to 2 years at a time.';
+    hint.textContent = t;
+  }
+  $('#fWeek').addEventListener('change', () => {
+    const other = $('#fWeek').value === 'other';
+    $('#fOtherWrap').hidden = !other;
+    if (other){ $('#fOther').value = ''; $('#fTo').value = ''; setTimeout(() => $('#fOther').focus(), 50); }
+    updateOtherHint();
+  });
+  ['#fOther','#fTo','#fWho','#fAmt'].forEach(s => $(s).addEventListener('input', updateOtherHint));
+  $('#fOther').addEventListener('change', () => { if (!$('#fTo').value || $('#fTo').value < $('#fOther').value) $('#fTo').value = $('#fOther').value; updateOtherHint(); });
+  let autoWho = false;
+  function openEntry(opts = {}){
+    const p = opts.id ? payments.find(x => x.id === opts.id) : null;
+    editingId = p ? p.id : null;
+    const week = p ? p.week : (opts.week || ymd(nextCollection()));
+    const coverFor = p ? (p.coverFor || '') : (opts.coverFor || '');
+    $('#entryTitle').textContent = p ? 'Edit payment' : coverFor ? 'Who’s covering for ' + coverFor + '?' : 'Log payment';
+    $('#fWeek').innerHTML = weekOptions(week);
+    $('#fOtherWrap').hidden = true;
+    $('#fToWrap').hidden = !!editingId;
+    $('#fFromLbl').textContent = editingId ? 'Date' : 'From';
+    $('#fAmtLbl').textContent = 'Amount';
+    $('#peopleOptions').innerHTML = allNames().map(n => '<option value="'+esc(n)+'">').join('');
+    $('#fCoverWrap').hidden = !coverFor;
+    $('#fCover').innerHTML = '<option value="">No one (their own turn)</option>' + allNames().map(n => '<option value="'+esc(n)+'"'+(same(n, coverFor)?' selected':'')+'>'+esc(n)+'</option>').join('');
+    let who = p ? p.who : (opts.who != null ? opts.who : '');
+    autoWho = false;
+    if (!p && !coverFor && opts.who == null){ who = turnFor(week) || ''; autoWho = !!who; }
+    $('#fWho').value = who;
+    const target = Number(settings.target) || '';
+    $('#fAmt').value = p ? p.amount : (opts.amt ?? target);
+    $('#fPaidOn').value = p ? (p.paidOn || '') : ymd(today());
+    $('#fNote').value = p ? (p.note || '') : '';
+    const stat = p ? p.status : 'paid';
+    document.querySelectorAll('input[name="status"]').forEach(r => r.checked = r.value === stat);
+    $('#delBtn').hidden = !p;
+    $('#entrySheet').showModal();
+    if (!p && !who) setTimeout(() => $('#fWho').focus(), 50);
+  }
+  $('#fWho').addEventListener('input', () => { autoWho = false; });
+  $('#fWeek').addEventListener('change', () => {
+    if (autoWho && !editingId && $('#fWeek').value !== 'other'){ const t = turnFor($('#fWeek').value); if (t) $('#fWho').value = t; }
+  });
+  $('#entryForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const who = $('#fWho').value.trim();
+    const amount = Number($('#fAmt').value);
+    if (!who){ toast('Enter who paid.'); return; }
+    const coverFor = $('#fCoverWrap').hidden ? '' : $('#fCover').value;
+    if (coverFor && same(coverFor, who)){ toast('Pick someone else to cover for ' + coverFor + '.'); return; }
+    if (!(amount >= 0) || $('#fAmt').value === ''){ toast('Enter an amount.'); return; }
+    let week = $('#fWeek').value;
+    const status = document.querySelector('input[name="status"]:checked').value;
+    if (week === 'other' && !editingId){
+      if (!$('#fOther').value){ toast('Pick a start date.'); return; }
+      if ($('#fTo').value && $('#fTo').value < $('#fOther').value){ toast('The end date is before the start date.'); return; }
+      const {add} = rangePlan();
+      if (!add.length){ toast('Nothing to add for those dates.'); return; }
+      const now = new Date().toISOString();
+      const list = add.map(w => ({
+        id: newId(), week: w, who, amount, status, coverFor,
+        paidOn: status === 'paid' ? ($('#fPaidOn').value || ymd(today())) : ($('#fPaidOn').value || ''),
+        note: $('#fNote').value.trim(), createdAt: now, updatedAt: now
+      }));
+      $('#saveEntry').disabled = true;
+      const ok = await writePayments(list);
+      $('#saveEntry').disabled = false;
+      if (!ok) return;
+      $('#entrySheet').close();
+      toast(list.length === 1 ? 'Payment saved' : list.length + ' weekly payments saved');
+      if (!settings.people.some(n => n.toLowerCase() === who.toLowerCase())) await writeSettings({...settings, people:[...settings.people, who]});
+      return;
+    }
+    if (week === 'other'){
+      if (!$('#fOther').value){ toast('Pick a date for this payment.'); return; }
+      week = ymd(snapToCollection(parse($('#fOther').value)));
+    }
+    const existing = editingId ? payments.find(x => x.id === editingId) : null;
+    const p = {
+      id: editingId || newId(),
+      week, who, amount, status, coverFor,
+      paidOn: status === 'paid' ? ($('#fPaidOn').value || ymd(today())) : ($('#fPaidOn').value || ''),
+      note: $('#fNote').value.trim(),
+      createdAt: existing ? existing.createdAt : new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    $('#saveEntry').disabled = true;
+    const ok = await writePayment(p);
+    $('#saveEntry').disabled = false;
+    if (!ok) return;
+    $('#entrySheet').close();
+    toast(editingId ? 'Payment updated' : 'Payment saved');
+    // remember a new name
+    if (!settings.people.some(n => n.toLowerCase() === who.toLowerCase())){
+      await writeSettings({...settings, people:[...settings.people, who]});
+    }
+  });
+  $('#cancelEntry').addEventListener('click', () => $('#entrySheet').close());
+  $('#delBtn').addEventListener('click', async () => {
+    if (!editingId) return;
+    if (!confirm('Delete this payment?')) return;
+    if (await removePayment(editingId)){ $('#entrySheet').close(); toast('Payment deleted'); }
+  });
+
+  // ---------- settings sheet ----------
+  function openSettings(){
+    $('#sFor').value = settings.recipient || '';
+    $('#sTarget').value = settings.target ?? '';
+    $('#sCur').value = settings.currency || '₱';
+    $('#sDay').value = String(settings.day ?? 0);
+    $('#sPeople').value = settings.people.join(', ');
+    $('#sStart').value = rotationStartKey();
+    $('#settingsSheet').showModal();
+  }
+  $('#settingsForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const people = [...new Set($('#sPeople').value.split(',').map(s => s.trim()).filter(Boolean))];
+    const day = Number($('#sDay').value);
+    const sd = $('#sStart').value ? parse($('#sStart').value) : nextCollection();
+    sd.setDate(sd.getDate() + ((day - sd.getDay() + 7) % 7));
+    const s = {
+      ...settings,
+      rotationStart: ymd(sd),
+      recipient: $('#sFor').value.trim() || 'Mama & Papa',
+      target: Number($('#sTarget').value) || 0,
+      currency: $('#sCur').value.trim() || '₱',
+      day,
+      people
+    };
+    if (await writeSettings(s)){ $('#settingsSheet').close(); toast('Settings saved'); }
+  });
+  $('#cancelSettings').addEventListener('click', () => $('#settingsSheet').close());
+
+  // Turn sheet (tap an upcoming week)
+  let turnWeek = null;
+  function openTurnSheet(weekKey){
+    const s = weekState(weekKey);
+    turnWeek = weekKey;
+    $('#turnTitle').textContent = weekLabel(weekKey);
+    $('#turnInfo').innerHTML = s.cover ? esc(s.cover.who) + ' is covering for ' + esc(s.turn) + '.' : esc(s.turn) + '’s turn.' + (s.entry ? ' ' + statusLabel(s.entry.status) + ', ' + esc(money(s.entry.amount)) + '.' : '');
+    $('#tsLog').textContent = s.entry ? 'Edit this payment' : 'Log ' + s.turn + '’s payment';
+    $('#tsCover').textContent = s.turn + ' can’t make it';
+    $('#tsCover').hidden = !!s.entry;
+    $('#turnSheet').showModal();
+  }
+  $('#tsLog').addEventListener('click', () => {
+    const s = weekState(turnWeek); $('#turnSheet').close();
+    if (s.entry) openEntry({id:s.entry.id}); else openEntry({week:turnWeek, who:s.turn});
+  });
+  $('#tsCover').addEventListener('click', () => {
+    const s = weekState(turnWeek); $('#turnSheet').close();
+    openEntry({week:turnWeek, coverFor:s.turn, who:''});
+  });
+  $('#tsClose').addEventListener('click', () => $('#turnSheet').close());
+
+  // Payback sheet
+  let settlePair = null;
+  function openSettle(from, to, amt){
+    settlePair = {from, to};
+    $('#settleTitle').textContent = from + ' paid ' + to + ' back';
+    $('#settleSub').textContent = from + ' owes ' + to + ' ' + money(amt) + ' in total. Enter how much was paid back.';
+    $('#stAmt').value = Math.round(amt*100)/100;
+    $('#stDate').value = ymd(today());
+    $('#stNote').value = '';
+    $('#settleSheet').showModal();
+  }
+  $('#settleForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const amount = Number($('#stAmt').value);
+    if (!(amount > 0)){ toast('Enter the amount paid back.'); return; }
+    const entry = {id:newId(), from:settlePair.from, to:settlePair.to, amount, date:$('#stDate').value || ymd(today()), note:$('#stNote').value.trim()};
+    if (await writeSettings({...settings, settlements:[...(settings.settlements||[]), entry]})){ $('#settleSheet').close(); toast('Payback saved'); }
+  });
+  $('#cancelSettle').addEventListener('click', () => $('#settleSheet').close());
+  $('#openSettings').addEventListener('click', openSettings);
+  $('#fab').addEventListener('click', () => openEntry());
+
+  // delegated actions
+  document.addEventListener('click', async e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const act = b.dataset.act;
+    if (act === 'edit') openEntry({id:b.dataset.id});
+    else if (act === 'log') openEntry({who:b.dataset.who, amt:b.dataset.amt ? Number(b.dataset.amt) : undefined});
+    else if (act === 'settings') openSettings();
+    else if (act === 'turn') openTurnSheet(b.dataset.week);
+    else if (act === 'logturn') openEntry({week:b.dataset.week, who:turnFor(b.dataset.week) || ''});
+    else if (act === 'cover') openEntry({week:b.dataset.week, coverFor:turnFor(b.dataset.week), who:''});
+    else if (act === 'settle') openSettle(b.dataset.from, b.dataset.to, Number(b.dataset.amt));
+    else if (act === 'markpaid'){
+      const p = payments.find(x => x.id === b.dataset.id); if (!p) return;
+      b.disabled = true;
+      if (await writePayment({...p, status:'paid', paidOn: ymd(today()), updatedAt:new Date().toISOString()})) toast(p.who + ' marked as paid');
+      b.disabled = false;
+    }
+  });
+  // close sheets when tapping the backdrop
+  document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+
+  // ---------- boot ----------
+  loadCache();
+  mode = configured ? 'firebase' : 'local';
+  render();
+  start();
+})();
+
+</script>
+</body>
+</html>
